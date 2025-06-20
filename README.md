@@ -1,30 +1,30 @@
 # GNN-LLM Hybrid Model for Next Activity Prediction in Business Processes
 
-## 1. 개요
+## 1. Overview
 
-이 프로젝트는 비즈니스 프로세스 관리(BPM) 분야의 핵심 과제인 **다음 액티비티 예측(Next Activity Prediction)**을 수행합니다. 전통적인 RNN 기반 모델부터 최신 LLM(Large Language Model)을 활용한 모델, 그리고 이 둘의 장점을 결합한 GNN-LLM 하이브리드 모델까지 다양한 접근 방식을 구현하고 성능을 비교 분석하는 것을 목표로 합니다.
+This project tackles the **Next Activity Prediction** task, a core challenge in the field of Business Process Management (BPM). It aims to implement and comparatively analyze various approaches, ranging from traditional RNN-based models to modern Large Language Model (LLM) based methods, and culminating in a novel GNN-LLM hybrid model that combines the strengths of both.
 
-이벤트 로그 데이터(BPI Challenge 2012, 2017 등)를 기반으로, 주어진 프로세스 케이스의 이전 액티비티 시퀀스를 보고 다음에 올 액티비티가 무엇일지 예측합니다.
+Based on event log data (e.g., BPI Challenge 2012, 2017), the model predicts the next likely activity given a sequence of previous activities in a process case.
 
-## 2. 주요 특징
+## 2. Key Features
 
-- **다양한 모델 구현:**
-    - **베이스라인 모델:** LSTM, GRU, Transformer
-    - **LLM 기반 모델:**
-        - **Frozen LLM:** 사전 학습된 LLM을 특징 추출기로만 사용
-        - **Fine-tuned LLM:** LLM 전체를 데이터셋에 맞게 미세 조정
-    - **핵심 제안 모델:**
-        - **GNN-LLM Hybrid Model:** 프로세스의 구조적 정보를 GNN으로, 순차적 텍스트 정보를 LLM으로 처리하여 시너지를 내는 하이브리드 모델
+- **Implementation of Diverse Models:**
+    - **Baseline Models:** LSTM, GRU, Transformer
+    - **LLM-based Models:**
+        - **Frozen LLM:** Uses a pre-trained LLM solely as a feature extractor.
+        - **Fine-tuned LLM:** Fine-tunes the entire LLM on the specific dataset.
+    - **Core Proposed Model:**
+        - **GNN-LLM Hybrid Model:** A hybrid model that leverages a GNN to process structural process information and an LLM for sequential text information, creating synergy.
 
-- **유연한 실험 환경:**
-    - `BPI_Challenge_2012`와 `BPI_Challenge_2017` 데이터셋 지원
-    - 커맨드 라인 인자를 통해 데이터셋 및 학습 장치(GPU)를 손쉽게 변경 가능
+- **Flexible Experimentation Environment:**
+    - Supports `BPI_Challenge_2012` and `BPI_Challenge_2017` datasets.
+    - Easily switch datasets and training devices (GPUs) via command-line arguments.
 
-- **체계적인 프로젝트 구조:**
-    - 데이터 전처리, 학습, 평가 파이프라인 분리
-    - `src/config.py`를 통한 중앙 집중식 설정 관리
+- **Systematic Project Structure:**
+    - Separate pipelines for data preprocessing, training, and evaluation.
+    - Centralized configuration management through `src/config.py`.
 
-## 3. 프로젝트 구조
+## 3. Project Structure
 
 ```
 PPM/
@@ -32,149 +32,149 @@ PPM/
 │   ├── BPI_Challenge_2012.xes.gz
 │   └── BPI_Challenge_2017.xes.gz
 ├── scripts/
-│   ├── preprocess_data.py      # 데이터 전처리 스크립트
-│   ├── train_base_models.py    # LSTM, GRU, Transformer 학습
-│   ├── train_llm_models.py     # LLM (Frozen/Finetune) 학습
-│   ├── train_hybrid_model.py   # GNN-LLM 하이브리드 모델 학습
-│   └── evaluate_models.py      # 학습된 모든 모델 평가
+│   ├── preprocess_data.py      # Data preprocessing script
+│   ├── train_base_models.py    # Train LSTM, GRU, Transformer
+│   ├── train_llm_models.py     # Train LLM (Frozen/Finetune)
+│   ├── train_hybrid_model.py   # Train GNN-LLM Hybrid Model
+│   └── evaluate_models.py      # Evaluate all trained models
 ├── src/
-│   ├── config.py               # 프로젝트 핵심 설정
-│   ├── data_processing.py      # 데이터 로딩 및 전처리 로직
-│   ├── engine.py               # 모델 학습 및 검증 루프
-│   └── models/                 # 모델 아키텍처 정의
+│   ├── config.py               # Core project configurations
+│   ├── data_processing.py      # Data loading and processing logic
+│   ├── engine.py               # Model training and validation loop
+│   └── models/                 # Model architecture definitions
 │       ├── base_models.py
 │       ├── llm_models.py
 │       └── hybrid_model.py
 ├── results/
-│   ├── checkpoints/            # 학습된 모델 가중치 (.pt)
-│   └── predictions/            # 모델별 예측 결과 (.csv)
+│   ├── checkpoints/            # Trained model weights (.pt)
+│   └── predictions/            # Model predictions (.csv)
 ├── .gitignore
 ├── README.md
 ├── requirements.txt
-├── run_training.sh             # 모든 모델 학습 실행 셸 스크립트
-└── run_evaluation.sh           # 모든 모델 평가 실행 셸 스크립트
+├── run_training.sh             # Shell script to run training for all models
+└── run_evaluation.sh           # Shell script to run evaluation for all models
 ```
 
-## 4. 시작하기
+## 4. Getting Started
 
-### 4.1. 환경 설정
+### 4.1. Environment Setup
 
-1.  **Conda 가상환경 생성 및 활성화**
+1.  **Create and Activate Conda Environment**
     ```bash
     conda create -n ppm_llm python=3.10
     conda activate ppm_llm
     ```
 
-2.  **필요 라이브러리 설치**
+2.  **Install Required Libraries**
     ```bash
     pip install -r requirements.txt
     ```
 
-### 4.2. 실험 파이프라인 실행
+### 4.2. Experiment Pipeline
 
-**1단계: 데이터 전처리**
+**Step 1: Data Preprocessing**
 
-학습을 시작하기 전에 원본 `.xes.gz` 로그 파일을 학습에 사용할 수 있는 `.pkl` 형태로 변환해야 합니다.
+Before starting training, you must convert the original `.xes.gz` log files into `.pkl` format for training.
 
 ```bash
-# BPI 2012 데이터셋 전처리
+# Preprocess BPI 2012 dataset
 python scripts/preprocess_data.py --dataset BPI_Challenge_2012.xes.gz
 
-# BPI 2017 데이터셋 전처리
+# Preprocess BPI 2017 dataset
 python scripts/preprocess_data.py --dataset BPI_Challenge_2017.xes.gz
 ```
 
-**2단계: 모델 학습**
+**Step 2: Model Training**
 
-`run_training.sh` 스크립트를 실행하여 `config.py`에 설정된 기본 데이터셋(BPI 2012)에 대해 모든 모델을 학습시킬 수 있습니다.
+You can run the `run_training.sh` script to train all models on the default dataset specified in `config.py` (BPI 2012).
 
 ```bash
 bash run_training.sh
 ```
 
-또는 개별 학습 스크립트를 실행하여 특정 모델만 학습시킬 수도 있습니다. 예를 들어, 1번 GPU에서 BPI 2017 데이터셋으로 하이브리드 모델을 50 epoch 학습시키는 경우:
+Alternatively, you can run individual training scripts. For example, to train the hybrid model on the BPI 2017 dataset for 50 epochs on GPU 1:
 
 ```bash
-# 1. src/config.py 파일에서 NUM_EPOCHS = 50 으로 수정
-# 2. 아래 명령어 실행
+# 1. Modify NUM_EPOCHS = 50 in the src/config.py file
+# 2. Run the command below
 python scripts/train_hybrid_model.py --dataset BPI_Challenge_2017.xes.gz --device cuda:1
 ```
 
-**3단계: 모델 평가**
+**Step 3: Model Evaluation**
 
-`run_evaluation.sh` 스크립트를 실행하여 `results/checkpoints`에 저장된 모든 모델의 성능을 평가하고 예측 결과를 생성합니다.
+Run the `run_evaluation.sh` script to evaluate the performance of all models saved in `results/checkpoints` and generate prediction files.
 
 ```bash
 bash run_evaluation.sh
 ```
 
-## 5. 주요 설정
+## 5. Main Configurations
 
--   모든 핵심 하이퍼파라미터 및 경로는 `src/config.py` 파일에서 수정할 수 있습니다.
--   **`LLM_MODEL_NAME`**: LLM 및 하이브리드 모델에서 사전 학습 모델을 지정합니다. (예: `"facebook/opt-350m"`)
--   **`NUM_EPOCHS`**: 학습할 에포크 수를 결정합니다.
--   **`BATCH_SIZE`**, **`LLM_BATCH_SIZE`**: 모델별 배치 크기를 설정합니다.
+-   All core hyperparameters and paths can be modified in the `src/config.py` file.
+-   **`LLM_MODEL_NAME`**: Specifies the pre-trained model to be used in LLM and hybrid models (e.g., `"facebook/opt-350m"`).
+-   **`NUM_EPOCHS`**: Determines the number of training epochs.
+-   **`BATCH_SIZE`**, **`LLM_BATCH_SIZE`**: Sets the batch size for different models.
 
-## 프로젝트 개요
+## Project Overview
 
-이 프로젝트는 **Process Mining (PPM)의 Next Activity Prediction**에 **Large Language Model (LLM)**을 활용하여 전통적인 AI 알고리즘보다 우수한 성능을 달성하는 것을 목표로 합니다.
+This project aims to achieve superior performance in **Next Activity Prediction** in **Process Mining (PPM)** compared to traditional AI algorithms by leveraging **Large Language Model (LLM)**.
 
-### 주요 목표
-1. **1차 목표**: LLM을 predictor로 활용하여 전통적인 AI 알고리즘(ANN, XGB, LSTM)보다 Next Activity Prediction에서 우수한 성능 증명
-2. **최종 목표**: LLM의 encoder에 GNN을 활용하여 graph 기반 activity encoding이 전통적인 방식보다 더 좋은 성능을 보임을 증명
+### Primary Goals
+1. **First Goal**: Prove the superiority of LLM as a predictor over traditional AI algorithms (ANN, XGB, LSTM) in Next Activity Prediction.
+2. **Final Goal**: Prove that graph-based activity encoding using LLM is better than traditional methods.
 
-## 프로젝트 구조
+## Project Structure
 
 ```
 PPM/
-├── PROJECT_RULES.md              # 프로젝트 규칙 및 목표
-├── requirements.txt              # 필요한 패키지 목록
-├── README.md                    # 이 파일
-├── LLM_only/                    # Phase 1: LLM 베이스라인
-│   ├── LLM_run.sh              # 실행 스크립트
-│   ├── main_experiment.py       # 메인 실험 스크립트
-│   ├── data_processor_fixed.py  # 데이터 처리 모듈
-│   ├── llm_predictor.py        # LLM 예측 모델
-│   ├── visualizer.py           # 시각화 도구
-│   ├── simple_demo.py          # 간단한 데모
-│   ├── quick_visualization.py  # 빠른 시각화 생성
-│   └── demo_*.png              # 생성된 시각화 파일들
-├── BPI_Challenge_2012.xes.gz   # 벤치마크 데이터셋 1
-├── BPI Challenge 2017.xes.gz   # 벤치마크 데이터셋 2
-└── BPIC19.jsonocel             # 벤치마크 데이터셋 3
+├── PROJECT_RULES.md              # Project rules and objectives
+├── requirements.txt              # List of required packages
+├── README.md                    # This file
+├── LLM_only/                    # Phase 1: LLM Baseline
+│   ├── LLM_run.sh              # Execution script
+│   ├── main_experiment.py       # Main experiment script
+│   ├── data_processor_fixed.py  # Data processing module
+│   ├── llm_predictor.py        # LLM prediction model
+│   ├── visualizer.py           # Visualization tool
+│   ├── simple_demo.py          # Simple demo
+│   ├── quick_visualization.py  # Quick visualization generation
+│   └── demo_*.png              # Generated visualization files
+├── BPI_Challenge_2012.xes.gz   # Benchmark dataset 1
+├── BPI Challenge 2017.xes.gz   # Benchmark dataset 2
+└── BPIC19.jsonocel             # Benchmark dataset 3
 ```
 
-## 데이터셋
+## Datasets
 
-프로젝트에서 사용하는 3개의 벤치마크 데이터셋:
+Three benchmark datasets used in the project:
 
-| 데이터셋 | 크기 | 형식 | 설명 |
+| Dataset | Size | Format | Description |
 |---------|------|------|------|
-| BPI Challenge 2012 | 3.2MB | XES | 대출 신청 프로세스 |
-| BPI Challenge 2017 | 28MB | XES | 대출 신청 프로세스 (확장) |
-| BPIC 2019 | 1.4GB | JSONOCEL | 구매 주문 프로세스 |
+| BPI Challenge 2012 | 3.2MB | XES | Loan application process |
+| BPI Challenge 2017 | 28MB | XES | Loan application process (extended) |
+| BPIC 2019 | 1.4GB | JSONOCEL | Purchase order process |
 
-## 핵심 아이디어
+## Core Idea
 
-### Next Activity Prediction이란?
+### What is Next Activity Prediction?
 
-Process Mining에서 **Next Activity Prediction**은 주어진 프로세스 실행 시퀀스를 기반으로 다음에 실행될 활동을 예측하는 태스크입니다.
+In Process Mining, **Next Activity Prediction** is the task of predicting the next activity to be executed given a sequence of process execution.
 
-**예시:**
+**Example:**
 ```
-입력 시퀀스: [A_SUBMITTED → A_PARTLYSUBMITTED → A_PREACCEPTED]
-예측 목표: 다음 활동은? → A_ACCEPTED
+Input sequence: [A_SUBMITTED → A_PARTLYSUBMITTED → A_PREACCEPTED]
+Prediction goal: What is the next activity? → A_ACCEPTED
 ```
 
-### LLM 접근법의 혁신성
+### LLM Approach's Innovation
 
-#### 전통적인 방법
-- **수치적 인코딩**: 활동을 숫자로 변환 (A_SUBMITTED → 1, A_ACCEPTED → 2)
-- **제한적 컨텍스트**: 짧은 시퀀스만 처리 가능
-- **도메인 특화**: 각 데이터셋마다 별도 전처리 필요
+#### Traditional Approach
+- **Numerical Encoding**: Convert activities to numbers (A_SUBMITTED → 1, A_ACCEPTED → 2)
+- **Limited Context**: Can only process short sequences
+- **Domain Specificity**: Requires separate preprocessing for each dataset
 
-#### LLM 접근법
-- **자연어 변환**: 프로세스를 자연어로 표현
+#### LLM Approach
+- **Natural Language Transformation**: Represent the process as natural language
   ```
   "Process execution sequence: 
    Step 1: Activity 'A_SUBMITTED' performed by 'User_1' 
@@ -182,105 +182,105 @@ Process Mining에서 **Next Activity Prediction**은 주어진 프로세스 실�
    Step 3: Activity 'A_PREACCEPTED' performed by 'User_1' 
    What is the next activity?"
   ```
-- **컨텍스트 이해**: 긴 시퀀스의 의미적 관계 파악
-- **전이 학습**: 사전 훈련된 지식 활용
-- **일반화**: 다양한 프로세스에 적용 가능
+- **Context Understanding**: Understanding semantic relationships in long sequences
+- **Transfer Learning**: Utilize pre-trained knowledge
+- **Generalization**: Easily applicable to various processes
 
-## 실험 결과
+## Experiment Results
 
-### 성능 요약 (시연용 데이터)
+### Performance Summary (Demo Data)
 
-| 데이터셋 | Accuracy | F1-Score | Test Samples | Unique Activities |
+| Dataset | Accuracy | F1-Score | Test Samples | Unique Activities |
 |---------|----------|----------|--------------|-------------------|
 | BPI_2012 | 0.742 | 0.739 | 100 | 7 |
 | BPI_2017 | 0.685 | 0.683 | 85 | 12 |
 | BPIC_2019 | 0.723 | 0.721 | 120 | 15 |
-| **평균** | **0.717** | **0.714** | - | - |
+| **Average** | **0.717** | **0.714** | - | - |
 
-### 주요 성과
-- **평균 정확도 71.7%**: 복잡한 프로세스 시퀀스에서 우수한 예측 성능
-- **일관된 성능**: 서로 다른 도메인의 데이터셋에서 안정적인 결과
-- **확장성**: 다양한 활동 수에 대응 가능
+### Key Achievements
+- **Average Accuracy 71.7%**: Superior prediction performance in complex process sequences
+- **Consistent Performance**: Stable results across different domain datasets
+- **Scalability**: Capable of handling various numbers of activities
 
-## 생성된 시각화
+## Generated Visualizations
 
-프로젝트 실행 후 다음 시각화 파일들이 생성됩니다:
+After project execution, the following visualization files will be generated:
 
-1. **`demo_process_example.png`**: 프로세스 시퀀스 예시 및 Next Activity Prediction 설명
-2. **`demo_llm_approach.png`**: LLM 접근법과 전통적 방법 비교
-3. **`demo_results_comparison.png`**: 데이터셋별 성능 비교
-4. **`demo_results_table.png`**: 결과 요약 표
-5. **`demo_prediction_examples.png`**: 실제 예측 예시들
+1. **`demo_process_example.png`**: Process sequence example and explanation of Next Activity Prediction
+2. **`demo_llm_approach.png`**: Comparison between LLM approach and traditional methods
+3. **`demo_results_comparison.png`**: Performance comparison across datasets
+4. **`demo_results_table.png`**: Summary table of results
+5. **`demo_prediction_examples.png`**: Actual prediction examples
 
-## 실행 방법
+## Execution Instructions
 
-### 1. 환경 설정
+### 1. Environment Setup
 ```bash
 pip install -r requirements.txt
 ```
 
-### 2. 빠른 데모 실행
+### 2. Quick Demo Execution
 ```bash
 cd LLM_only
 ./LLM_run.sh demo
 ```
 
-### 3. 전체 실험 실행
+### 3. Full Experiment Execution
 ```bash
 cd LLM_only
 ./LLM_run.sh full
 ```
 
-### 4. 시각화만 생성
+### 4. Visualization Only
 ```bash
 cd LLM_only
 python3 quick_visualization.py
 ```
 
-## 기술 스택
+## Technology Stack
 
 - **LLM**: GPT-2, DialoGPT, OPT (Hugging Face Transformers)
-- **데이터 처리**: pm4py, pandas, numpy
-- **머신러닝**: scikit-learn, torch
-- **시각화**: matplotlib, seaborn
+- **Data Processing**: pm4py, pandas, numpy
+- **Machine Learning**: scikit-learn, torch
+- **Visualization**: matplotlib, seaborn
 
-## 프로젝트 로드맵
+## Project Roadmap
 
-### ✅ Phase 1: LLM Baseline (완료)
-- [x] 데이터 처리 파이프라인 구축
-- [x] LLM 기반 예측 모델 구현
-- [x] 벤치마크 데이터셋 평가
-- [x] 시각화 및 결과 분석
+### ✅ Phase 1: LLM Baseline (Completed)
+- [x] Build data processing pipeline
+- [x] Implement LLM-based prediction model
+- [x] Benchmark dataset evaluation
+- [x] Visualization and result analysis
 
-### 🔄 Phase 2: 전통적인 AI 방법 비교 (진행 예정)
-- [ ] ANN, XGB, LSTM 모델 구현
-- [ ] 동일 데이터셋으로 성능 비교
-- [ ] LLM 우수성 통계적 검증
+### 🔄 Phase 2: Traditional AI Method Comparison (Planned)
+- [ ] Implement ANN, XGB, LSTM models
+- [ ] Performance comparison on the same dataset
+- [ ] LLM superiority statistical verification
 
-### 🎯 Phase 3: GNN + LLM Integration (최종 목표)
-- [ ] Graph Neural Network 설계
-- [ ] LLM encoder와 GNN 통합
-- [ ] Graph 기반 activity encoding 구현
-- [ ] 최종 성능 향상 검증
+### 🎯 Phase 3: GNN + LLM Integration (Final Goal)
+- [ ] Graph Neural Network design
+- [ ] LLM encoder and GNN integration
+- [ ] Graph-based activity encoding implementation
+- [ ] Final performance improvement verification
 
-## LLM의 장점
+## LLM Advantages
 
-1. **컨텍스트 이해**: 프로세스의 의미적 흐름 파악
-2. **Long-term Dependencies**: 긴 시퀀스의 의존성 모델링
-3. **Semantic Similarity**: 유사한 활동 간의 관계 이해
-4. **Transfer Learning**: 다른 도메인 지식 활용
-5. **Generalization**: 새로운 프로세스에 쉽게 적응
+1. **Context Understanding**: Understanding the semantic flow of the process
+2. **Long-term Dependencies**: Modeling long-term dependencies
+3. **Semantic Similarity**: Understanding relationships between similar activities
+4. **Transfer Learning**: Utilize knowledge from other domains
+5. **Generalization**: Easily adaptable to new processes
 
-## 기대 효과
+## Expected Benefits
 
-- **프로세스 마이닝 분야**: LLM 활용 새로운 패러다임 제시
-- **실무 적용**: 더 정확한 프로세스 예측 및 최적화
-- **연구 발전**: GNN + LLM 융합 연구 기반 마련
+- **Process Mining Field**: Present new paradigm by leveraging LLM
+- **Practical Application**: More accurate process prediction and optimization
+- **Research Development**: Establish GNN + LLM fusion research foundation
 
-## 연락처
+## Contact
 
-이 프로젝트에 대한 문의사항이나 협업 제안은 언제든지 환영합니다.
+Any inquiries or collaboration proposals are welcome at any time.
 
 ---
 
-**Note**: 현재 시연용 결과는 샘플 데이터를 기반으로 생성되었습니다. 실제 성능 평가를 위해서는 전체 실험을 실행해주세요. 
+**Note**: The current demo results are generated based on sample data. Please run the full experiment for actual performance evaluation. 
