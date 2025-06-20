@@ -1,0 +1,27 @@
+# Backup files
+backup_files/
+nohup.out
+
+# Data files
+data/processed/
+*.xes.gz
+
+# Results and checkpoints
+results/
+reports/
+
+# Python specific
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.so
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# Synology temporary files
+@eaDir/
+
+# Log files
+*.log 
