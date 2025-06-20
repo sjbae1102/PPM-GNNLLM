@@ -1,4 +1,119 @@
-# PPM Next Activity Prediction with LLM
+# GNN-LLM Hybrid Model for Next Activity Prediction in Business Processes
+
+## 1. 개요
+
+이 프로젝트는 비즈니스 프로세스 관리(BPM) 분야의 핵심 과제인 **다음 액티비티 예측(Next Activity Prediction)**을 수행합니다. 전통적인 RNN 기반 모델부터 최신 LLM(Large Language Model)을 활용한 모델, 그리고 이 둘의 장점을 결합한 GNN-LLM 하이브리드 모델까지 다양한 접근 방식을 구현하고 성능을 비교 분석하는 것을 목표로 합니다.
+
+이벤트 로그 데이터(BPI Challenge 2012, 2017 등)를 기반으로, 주어진 프로세스 케이스의 이전 액티비티 시퀀스를 보고 다음에 올 액티비티가 무엇일지 예측합니다.
+
+## 2. 주요 특징
+
+- **다양한 모델 구현:**
+    - **베이스라인 모델:** LSTM, GRU, Transformer
+    - **LLM 기반 모델:**
+        - **Frozen LLM:** 사전 학습된 LLM을 특징 추출기로만 사용
+        - **Fine-tuned LLM:** LLM 전체를 데이터셋에 맞게 미세 조정
+    - **핵심 제안 모델:**
+        - **GNN-LLM Hybrid Model:** 프로세스의 구조적 정보를 GNN으로, 순차적 텍스트 정보를 LLM으로 처리하여 시너지를 내는 하이브리드 모델
+
+- **유연한 실험 환경:**
+    - `BPI_Challenge_2012`와 `BPI_Challenge_2017` 데이터셋 지원
+    - 커맨드 라인 인자를 통해 데이터셋 및 학습 장치(GPU)를 손쉽게 변경 가능
+
+- **체계적인 프로젝트 구조:**
+    - 데이터 전처리, 학습, 평가 파이프라인 분리
+    - `src/config.py`를 통한 중앙 집중식 설정 관리
+
+## 3. 프로젝트 구조
+
+```
+PPM/
+├── data/
+│   ├── BPI_Challenge_2012.xes.gz
+│   └── BPI_Challenge_2017.xes.gz
+├── scripts/
+│   ├── preprocess_data.py      # 데이터 전처리 스크립트
+│   ├── train_base_models.py    # LSTM, GRU, Transformer 학습
+│   ├── train_llm_models.py     # LLM (Frozen/Finetune) 학습
+│   ├── train_hybrid_model.py   # GNN-LLM 하이브리드 모델 학습
+│   └── evaluate_models.py      # 학습된 모든 모델 평가
+├── src/
+│   ├── config.py               # 프로젝트 핵심 설정
+│   ├── data_processing.py      # 데이터 로딩 및 전처리 로직
+│   ├── engine.py               # 모델 학습 및 검증 루프
+│   └── models/                 # 모델 아키텍처 정의
+│       ├── base_models.py
+│       ├── llm_models.py
+│       └── hybrid_model.py
+├── results/
+│   ├── checkpoints/            # 학습된 모델 가중치 (.pt)
+│   └── predictions/            # 모델별 예측 결과 (.csv)
+├── .gitignore
+├── README.md
+├── requirements.txt
+├── run_training.sh             # 모든 모델 학습 실행 셸 스크립트
+└── run_evaluation.sh           # 모든 모델 평가 실행 셸 스크립트
+```
+
+## 4. 시작하기
+
+### 4.1. 환경 설정
+
+1.  **Conda 가상환경 생성 및 활성화**
+    ```bash
+    conda create -n ppm_llm python=3.10
+    conda activate ppm_llm
+    ```
+
+2.  **필요 라이브러리 설치**
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+### 4.2. 실험 파이프라인 실행
+
+**1단계: 데이터 전처리**
+
+학습을 시작하기 전에 원본 `.xes.gz` 로그 파일을 학습에 사용할 수 있는 `.pkl` 형태로 변환해야 합니다.
+
+```bash
+# BPI 2012 데이터셋 전처리
+python scripts/preprocess_data.py --dataset BPI_Challenge_2012.xes.gz
+
+# BPI 2017 데이터셋 전처리
+python scripts/preprocess_data.py --dataset BPI_Challenge_2017.xes.gz
+```
+
+**2단계: 모델 학습**
+
+`run_training.sh` 스크립트를 실행하여 `config.py`에 설정된 기본 데이터셋(BPI 2012)에 대해 모든 모델을 학습시킬 수 있습니다.
+
+```bash
+bash run_training.sh
+```
+
+또는 개별 학습 스크립트를 실행하여 특정 모델만 학습시킬 수도 있습니다. 예를 들어, 1번 GPU에서 BPI 2017 데이터셋으로 하이브리드 모델을 50 epoch 학습시키는 경우:
+
+```bash
+# 1. src/config.py 파일에서 NUM_EPOCHS = 50 으로 수정
+# 2. 아래 명령어 실행
+python scripts/train_hybrid_model.py --dataset BPI_Challenge_2017.xes.gz --device cuda:1
+```
+
+**3단계: 모델 평가**
+
+`run_evaluation.sh` 스크립트를 실행하여 `results/checkpoints`에 저장된 모든 모델의 성능을 평가하고 예측 결과를 생성합니다.
+
+```bash
+bash run_evaluation.sh
+```
+
+## 5. 주요 설정
+
+-   모든 핵심 하이퍼파라미터 및 경로는 `src/config.py` 파일에서 수정할 수 있습니다.
+-   **`LLM_MODEL_NAME`**: LLM 및 하이브리드 모델에서 사전 학습 모델을 지정합니다. (예: `"facebook/opt-350m"`)
+-   **`NUM_EPOCHS`**: 학습할 에포크 수를 결정합니다.
+-   **`BATCH_SIZE`**, **`LLM_BATCH_SIZE`**: 모델별 배치 크기를 설정합니다.
 
 ## 프로젝트 개요
 
